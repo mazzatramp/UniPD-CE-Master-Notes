@@ -1,0 +1,14 @@
+# Ignore log files
+*.log
+
+# Ignore auxiliary files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+
+# Ignore PDF files
+*.pdf
