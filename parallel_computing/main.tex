@@ -54,46 +54,83 @@
 	\textbf{Abstract:} 
 \end{abstract}
 
-\section{Introduction}
+%----------------------------------------------------------------------------------------
+%	GLOSSARY
+%----------------------------------------------------------------------------------------
 
-small histroy on parallel computers
-explicit and implicit parallelism
-Parallel computing is superset of non-parallel computing
-GHz can't go up, so we need to go wide
+% To create a glossary in LaTeX, you need to use the 'glossaries' package.
+% First, include the package in the preamble:
+% \usepackage[acronym]{glossaries}
 
+% Then, define your glossary entries. For example:
+% \newglossaryentry{parallel_computing}{
+%     name=parallel computing,
+%     description={A type of computation in which many calculations or processes are carried out simultaneously}
+% }
 
-top-500 \cite{top500}
+% For acronyms, you can use:
+% \newacronym{gpu}{GPU}{Graphics Processing Unit}
 
-importance of network, as movement is the bottleneck
-importance of power consumption and how it went down
+% After defining your entries, you need to print the glossary in your document:
+% \printglossaries
 
-Node 6
+% Finally, to reference a glossary entry in your text, use:
+% \gls{parallel_computing} or \gls{gpu}
 
-Seymour Cray \cite{crey_seymour}
+%\section{Introduction}
+%
+%small histroy on parallel computers
+%explicit and implicit parallelism
+%Parallel computing is superset of non-parallel computing
+%GHz can't go up, so we need to go wide
+%
+%top-500 \cite{top500}
+%
+%importance of network, as movement is the bottleneck
+%importance of power consumption and how it went down
+%
+%Seymour Cray \cite{crey_seymour}
 
-\subsection{Important Tasks}
+\section{Introduction to Parallelism}
 
-Physiscs, QED, QCD
-Complex numbers for QCD could be computend in-chip with boolean gates, but trying this optimization isn't good for general purpose computing
-String theory requires even more computing power
+Parallel computing is the term used to describe the simultaneous execution of multiple tasks. Sequential computing is basically a special case. The need of parallel computing appeard in the xxxx, when the clock speed of CPUs started to plateau. The only way to increase the computational power was to increase the number of cores, a challenge that was though to be impossible for many algorithms by many people.
 
-Astronomy
-simulations of the universe, with clusters of galaxies
+Parallelism is quite a generic term, and can be achieved in many ways. We talk about explicit and implicit parallelism.
 
-Biology
-Proteing folding IBM 2002\cite{ibm_protein_folding}, Alphafold 2020 \cite{alphafold}
+\begin{itemize}
+	\item In \textbf{Explicit parallelism} the programmer specifies parallel tasks and their execution. Requires knowledge of hardware and parallel constructs (e.g., threads, message passing, synchronization). Examples: OpenMP, MPI, CUDA.
+	\item In \textbf{Implicit parallelism} the compiler or the processor automatically parallelizes the code. The program itself has sequential semantics.
+\end{itemize}
 
-Neuroscience
-Our brain has $10^{11}$ neurons, $10^{15}$ synapses, with $10^{18}$ operations per second
-Human braing simulation is desired but not feasible yet.
+Parallelism is used by Supercomputers to achieve their high performance. The TOP500\cite{top500} lists the most powerful computer systems, ranking them by their performance on the LINPACK benchmark (a measure of a system's floating-point computing power). 
 
-AI and ML
-LLMs are very large, with $10^9$ parameters
-Training is very expensive, with $10^19$ operations
-Inference is cheaper, with $10^9$ operations
+The primary bottleneck for large computing systems is the communication between processors, as data movement is limited by the speed of light. The power consumption of supercomputers is also a major concern, but the efficiency has been increasing by many orders of magnitude over the years.
 
-Cryptography
-RSA \cite{rsa} and homomorphic cryptography \cite{homomorphic_cryptography}
+Seymour Cray is the pioneer in supercomputing. He made substantial contributions to the field\cite{crey_seymour} setting the foundation for many of today's parallel computing architectures. 
+
+\subsection{Supercomputer's tasks}
+
+Parallel computing is and was used in many scientific fields. Including:
+
+\textbf{Physics}
+In physics, particularly in Quantum Electrodynamics (QED) and Quantum Chromodynamics (QCD), complex numbers are used extensively. While it is theoretically possible to compute these using boolean gates in-chip, such optimizations are not practical for general-purpose computing. String theory simulations require even more computational power.
+
+\textbf{Astronomy}
+Astronomy benefits from parallel computing through simulations of the universe. This is done using clusters of galaxies.
+
+\textbf{Biology}
+In biology, protein folding is the most significant challenge. IBM's 2002 project on protein folding\cite{ibm_protein_folding} and DeepMind's AlphaFold in 2020\cite{alphafold} have made substantial progress in this area using parallel computing.
+
+\textbf{Neuroscience}
+Neuroscience aims to simulate the human brain, which has approximately $10^{11}$ neurons and $10^{15}$ synapses, requiring around $10^{18}$ operations per second. While a full simulation of the human brain is not yet feasible, parallel computing is essential for progress in this field.
+
+\textbf{Artificial Intelligence and Machine Learning}
+Large Language Models (LLMs) in AI and ML have billions of parameters ($10^9$). Training these models is computationally expensive, requiring around $10^{19}$ operations, while inference is cheaper, requiring around $10^9$ operations.
+
+\textbf{Cryptography}
+Cryptography relies heavily on parallel computing for tasks such as RSA encryption\cite{rsa} and homomorphic cryptography\cite{homomorphic_cryptography}.
+
+\section{Parallel Architectures}
 
 We don't know what makes a problem difficult to compute.
 
@@ -101,26 +138,30 @@ The NC class of problems is defined as those that can be solved in logarithmic t
 
 The Circuit Value Problem is in NC. The problem is to determine the value of a circuit given the values of the inputs. Given a number of processors equal to the number of gates, we can compute the value of the circuit in logarithmic time.
 
-\subsection{Computing large sum, example}
-without parallelism: $O(n)$
+\subsection{Example on Prallelizing Algorithms: the Prefix Sum}
 
-With parallelims we can do better.
+Without parallelism, the prefix sum computation has a time complexity of $O(n)$. 
 
-Top down approach: divide and conquer, using associative property of sum we can divide the sum in half and sum the two halves in different processors. This is a recursive algorithm. The base case is when the sum is of size 2, in which case we can just return the sum. 
+With parallelism, we can achieve better performance.
 
-Bottom up approach: we can use a tree to sum the numbers. The tree is a binary tree, with the leaves being the numbers to sum. The internal nodes are the sum of the children. The root is the sum of all the numbers. This is a parallel algorithm.
+\textbf{Top-down approach:} Using divide and conquer, and the associative property of sum, we can divide the sum in half and sum the two halves in different processors. This is a recursive algorithm. The base case is when the sum is of size 2, in which case we can just return the sum. This approach leverages the power of parallel processors to perform the summation in parallel, reducing the overall time complexity.
 
-Both lead to $O(\log n)$, this is true for any associative operation.
+\textbf{Bottom-up approach:} We can use a tree structure to sum the numbers. The tree is a binary tree, with the leaves being the numbers to sum. The internal nodes represent the sum of their children. The root node will eventually hold the sum of all the numbers. This approach is inherently parallel as each level of the tree can be processed simultaneously.
 
+Both approaches lead to a time complexity of $O(\log n)$, and this is true for any associative operation. This significant reduction in time complexity demonstrates the power of parallel computing in optimizing algorithms.
 
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
-%----------------------------------------------------------------------------------------
+\section{Communication}
 
-\bibliography{sample.bib} % Use \nobibliography{<bib file>} if you have references but don't want to print a bibliography
+Communication is the bottleneck in parallel computing. Speed of light is the limit. 
 
+\section{Parallel Algorithms}
+
+Parallelism on Merge sort.
+
+\newpage
+
+\bibliography{sample.bib} 
 \bibliographystyle{plainnat}
 
-%----------------------------------------------------------------------------------------
 
 \end{document}
